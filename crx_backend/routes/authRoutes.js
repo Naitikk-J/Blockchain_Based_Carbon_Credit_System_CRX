@@ -1,6 +1,7 @@
 const express = require("express");
+const { query } = require("../db");
+
 const router = express.Router();
-const User = require("../models/User");
 
 // POST /login
 router.post("/login", async (req, res) => {
@@ -11,7 +12,12 @@ router.post("/login", async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ wallet });
+    const { rows } = await query(
+      "SELECT wallet, email, role FROM users WHERE LOWER(wallet) = LOWER($1) LIMIT 1",
+      [wallet]
+    );
+
+    const user = rows[0];
 
     if (!user) {
       return res.status(404).json({ message: "User not found. Please sign up first." });
@@ -40,14 +46,26 @@ router.post("/signup", async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
+  if (!["user", "authority"].includes(role)) {
+    return res.status(400).json({ message: "Invalid role" });
+  }
+
   try {
-    let existing = await User.findOne({ wallet });
-    if (existing) {
+    const existing = await query(
+      "SELECT wallet FROM users WHERE LOWER(wallet) = LOWER($1) LIMIT 1",
+      [wallet]
+    );
+
+    if (existing.rows.length > 0) {
       return res.status(409).json({ message: "User already exists" });
     }
 
-    const user = new User({ wallet, email, role });
-    await user.save();
+    const inserted = await query(
+      "INSERT INTO users (wallet, email, role) VALUES ($1, $2, $3) RETURNING wallet, email, role",
+      [wallet, email, role]
+    );
+
+    const user = inserted.rows[0];
 
     return res.status(201).json({
       message: "Signup successful",

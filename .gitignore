@@ -27,3 +27,5 @@ myenv/
 # Python bytecode
 *.pyc
 __pycache__/
+
+.config/
