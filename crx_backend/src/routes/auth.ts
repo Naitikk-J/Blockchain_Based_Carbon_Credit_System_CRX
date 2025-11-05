@@ -1,46 +1,55 @@
 import express, { Request, Response } from "express";
 import { User } from "../models/User";
 import { generateToken } from "../middleware/auth";
-import { sendWelcomeEmail } from "../utils/mailer";
+import { sendWelcomeEmail, sendPasswordEmail } from "../utils/mailer";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 const router = express.Router();
 
 router.post("/signup", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, wallet, role } = req.body;
+    const { email, wallet, role, name } = req.body;
 
-    if (!email || !wallet || !role) {
-      res.status(400).json({ message: "Email, wallet, and role are required" });
+    if (!email || !role || !name) {
+      res.status(400).json({ message: "Email, name, and role are required" });
       return;
     }
 
-    const existingUser = await User.findOne({
-      $or: [{ email }, { wallet }],
-    });
+    if (role === 'user' && !wallet) {
+      res.status(400).json({ message: "Wallet is required for users" });
+      return;
+    }
+
+    const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      res.status(409).json({ message: "User already exists with this email or wallet" });
+      res.status(409).json({ message: "User already exists with this email" });
       return;
     }
 
+    const password = crypto.randomBytes(8).toString('hex');
+
     const newUser = new User({
-      wallet: wallet.toLowerCase(),
+      wallet: wallet ? wallet.toLowerCase() : undefined,
       email: email.toLowerCase(),
+      password,
       role,
-      name: `User ${wallet.slice(0, 6)}...${wallet.slice(-4)}`,
+      name,
       carbonCredits: 0,
     });
 
     await newUser.save();
 
-    await sendWelcomeEmail(newUser.email);
+    await sendPasswordEmail(newUser.email, password);
 
-    const token = generateToken(newUser.wallet, newUser.role);
+    const token = generateToken(newUser.id, newUser.role);
 
     res.status(201).json({
       message: "Signup successful",
       token,
       user: {
+        id: newUser.id,
         wallet: newUser.wallet,
         email: newUser.email,
         role: newUser.role,
@@ -55,35 +64,35 @@ router.post("/signup", async (req: Request, res: Response): Promise<void> => {
 
 router.post("/login", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, wallet } = req.body;
+    const { email, password } = req.body;
 
-    if (!email || !wallet) {
-      res.status(400).json({ message: "Email and wallet are required" });
+    if (!email || !password) {
+      res.status(400).json({ message: "Email and password are required" });
       return;
     }
 
-    let user = await User.findOne({
-      $or: [{ email }, { wallet }],
-    });
+    const user = await User.findOne({ email: email.toLowerCase() });
 
-    if (!user) {
-      user = new User({
-        wallet: wallet.toLowerCase(),
-        email: email.toLowerCase(),
-        role: "user",
-        name: `User ${wallet.slice(0, 6)}...${wallet.slice(-4)}`,
-        carbonCredits: 0,
-      });
-      await user.save();
+    if (!user || !user.password) {
+      res.status(401).json({ message: "Invalid credentials" });
+      return;
     }
 
-    const token = generateToken(user.wallet, user.role);
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      res.status(401).json({ message: "Invalid credentials" });
+      return;
+    }
+
+    const token = generateToken(user.id, user.role);
 
     res.status(200).json({
       message: "Login successful",
       token,
       role: user.role,
       user: {
+        id: user.id,
         wallet: user.wallet,
         email: user.email,
         role: user.role,

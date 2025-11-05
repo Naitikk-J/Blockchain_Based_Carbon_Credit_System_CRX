@@ -1,8 +1,10 @@
 import mongoose, { Schema, Document } from "mongoose";
+import bcrypt from "bcryptjs";
 
 export interface IUser extends Document {
-  wallet: string;
+  wallet?: string; // Made wallet optional
   email: string;
+  password?: string; // Made password optional for now
   role: "authority" | "user";
   name: string;
   blog?: string;
@@ -15,15 +17,19 @@ const userSchema = new Schema<IUser>(
   {
     wallet: {
       type: String,
-      required: true,
       unique: true,
       lowercase: true,
+      sparse: true, // Allows multiple documents to have a null value for wallet
     },
     email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
+    },
+    password: {
+      type: String,
+      required: true,
     },
     role: {
       type: String,
@@ -45,5 +51,18 @@ const userSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
+
+userSchema.pre<IUser>("save", async function (next) {
+  if (!this.isModified("password")  || !this.password) {
+    return next();
+  }
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err:any) {
+    next(err);
+  }
+});
 
 export const User = mongoose.model<IUser>("User", userSchema);

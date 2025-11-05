@@ -2,24 +2,22 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useWallet } from "../../components/WalletContext";
 import styles from "../../styles/login.module.css";
 
 export default function LoginPage() {
-    const { address, connectWallet } = useWallet();
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const router = useRouter();
 
     const handleLogin = async () => {
-        if (!address) return alert("Please connect your wallet first!");
-        if (!email) return alert("Please enter your email!");
+        if (!email || !password) return alert("Please enter your email and password!");
 
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
             const response = await fetch(`${apiUrl}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, wallet: address }),
+                body: JSON.stringify({ email, password }),
             });
 
             const data = await response.json();
@@ -31,7 +29,9 @@ export default function LoginPage() {
 
             localStorage.setItem("crx_token", data.token);
             localStorage.setItem("crx_user_role", data.role);
-            localStorage.setItem("crx_user_wallet", data.user.wallet);
+            if(data.user.wallet) {
+              localStorage.setItem("crx_user_wallet", data.user.wallet);
+            }
 
             if (data.role === "authority") {
                 router.push("/dashboard/authority");
@@ -56,26 +56,18 @@ export default function LoginPage() {
                 <div className={styles.form}>
                     <h1 className={styles.title}>🔐 Login</h1>
 
-                    {!address ? (
-                        <button onClick={connectWallet} className={styles.button}>
-                            Connect Wallet
-                        </button>
-                    ) : (
-                        <>
-                            <strong style={{ color: "#FFFFFF" }}>
-                                <p className={styles.connectedWallet}>
-                                    Connected Wallet:{" "}
-                                    {address.slice(0, 6)}...{address.slice(-4)}
-                                </p>
-                            </strong>
-                        </>
-                    )}
-
                     <input
                         type="email"
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        className={styles.input}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className={styles.input}
                     />
 

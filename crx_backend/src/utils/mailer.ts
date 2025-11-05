@@ -23,3 +23,19 @@ export const sendWelcomeEmail = async (to: string) => {
     console.error('Error sending welcome email:', error);
   }
 };
+
+export const sendPasswordEmail = async (to: string, password: string) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to,
+    subject: 'Your CRX Password',
+    text: `Your password for CRX is: ${password}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Password email sent to', to);
+  } catch (error) {
+    console.error('Error sending password email:', error);
+  }
+};

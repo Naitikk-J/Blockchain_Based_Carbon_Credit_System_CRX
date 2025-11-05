@@ -9,22 +9,22 @@ export default function SignupPage() {
   const { address, connectWallet } = useWallet();
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [role, setRole] = useState<"authority" | "user" | null>(null);
 
-
   const handleSignup = async () => {
-    if (!address) {
-      alert("Please connect your wallet first!");
-      return;
-    }
-
     if (!role) {
       alert("Please select a role to sign up.");
       return;
     }
 
-    if (!email.trim()) {
-      alert("Please enter your email.");
+    if (role === 'user' && !address) {
+      alert("Please connect your wallet first!");
+      return;
+    }
+
+    if (!email.trim() || !name.trim()) {
+      alert("Please enter your email and name.");
       return;
     }
 
@@ -33,7 +33,12 @@ export default function SignupPage() {
       const response = await fetch(`${apiUrl}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, wallet: address, role }),
+        body: JSON.stringify({ 
+          email, 
+          wallet: role === 'user' ? address : undefined,
+          role,
+          name
+        }),
       });
 
       const data = await response.json();
@@ -42,12 +47,8 @@ export default function SignupPage() {
         throw new Error(data.message || "Signup failed");
       }
 
-      localStorage.setItem("crx_token", data.token);
-      localStorage.setItem("crx_user_role", data.user.role);
-      localStorage.setItem("crx_user_wallet", data.user.wallet);
-
-      alert(`✅ Signed up successfully as ${role}!`);
-      router.push(`/dashboard/${role}`);
+      alert(`✅ Signed up successfully as ${role}! Please check your email for your password.`);
+      router.push(`/login`);
     } catch (err: any) {
       console.error("Signup error:", err);
       alert(`❌ Signup error: ${err.message}`);
@@ -71,11 +72,11 @@ export default function SignupPage() {
         <div className={styles.form}>
           <h1 className={styles.title}>Sign Up</h1>
 
-          {!address ? (
+          {role === 'user' && !address ? (
             <button onClick={connectWallet} className={styles.button}>
               Connect Wallet
             </button>
-          ) : (
+          ) : role === 'user' && (
             <>
               <p style={{ fontSize: "0.9rem", color: "#ccc" }}>
                 ✅ Connected: {address.slice(0, 6)}...{address.slice(-4)}
@@ -95,6 +96,13 @@ export default function SignupPage() {
             placeholder="Enter Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className={styles.input}
+          />
+          <input
+            type="text"
+            placeholder="Enter Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             className={styles.input}
           />
 
