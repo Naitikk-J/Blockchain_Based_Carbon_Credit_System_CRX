@@ -1,10 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Exo+2:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap');
+
+:root {
+  --primary-color: #00bfff;
+  --bg-dark: #0a0a0a;
+  --text-light: #e0f7ff;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+}
 
 .pageWrapper {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Orbitron', sans-serif;
+  background-color: var(--bg-dark);
 }
 
 .backgroundVideo {
@@ -15,7 +24,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.3);
+  filter: brightness(0.5);
 }
 
 .container {
@@ -27,27 +36,25 @@
 }
 
 .form {
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
   padding: 2rem 3rem;
   border-radius: 1rem;
-  box-shadow: 0 0 20px rgba(0, 119, 255, 0.2);
   width: 100%;
   max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   animation: slideIn 1s ease-out;
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .title {
-  font-family: 'Bebas Neue', sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
-  color: #00bfff;
+  color: var(--primary-color);
   margin-bottom: 1rem;
-  text-shadow: 0 0 10px #00bfff88;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -55,53 +62,33 @@
 .input {
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  background-color: #1a1a1a;
-  color: white;
-  border: 1px solid #444;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: var(--text-light);
+  border: 1px solid var(--glass-border);
   border-radius: 0.5rem;
   outline: none;
   transition: all 0.3s ease;
 }
 
 .input:focus {
-  border-color: #00bfff;
-  box-shadow: 0 0 10px #00bfff88;
+  border-color: var(--primary-color);
 }
 
 .button {
   padding: 0.75rem 1rem;
   font-size: 1rem;
   background-color: transparent;
-  color: #00bfff;
-  border: 2px solid #00bfff;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
   border-radius: 0.5rem;
   cursor: pointer;
   font-weight: bold;
   transition: all 0.4s ease-in-out;
-  position: relative;
-  overflow: hidden;
-}
-
-.button::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: #00bfff55;
-  transition: all 0.4s ease-in-out;
-  z-index: 0;
-}
-
-.button:hover::before {
-  left: 0;
 }
 
 .button:hover {
-  color: black;
-  background: #00bfff;
-  box-shadow: 0 0 10px #00bfff, 0 0 20px #00bfff;
+  background-color: var(--primary-color);
+  color: #000;
 }
 
 @keyframes slideIn {
@@ -114,103 +101,7 @@
     transform: translateY(0);
   }
 }
-.container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  padding: 2rem;
-}
 
-.form {
-  background-color: rgba(0, 0, 0, 0.075);
-  padding: 5rem 3rem;
-  border-radius: 1rem;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0);
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  animation: slideIn 1s ease-out;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: 700;
-  text-align: center;
-  color: rgb(255, 255, 255);
-  margin-bottom: 1rem;
-  text-shadow: 0 0 8px #00ffff;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.input {
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  background-color: #1a1a1a;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 0.5rem;
-  outline: none;
-  transition: all 0.3s ease;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.input:focus {
-  border-color: #00ffff;
-  box-shadow: 0 0 10px #00ffff88;
-}
-
-.button {
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  background-color: transparent;
-  color: #00ffff;
-  border: 2px solid #00ffff;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.4s ease-in-out;
-  position: relative;
-  overflow: hidden;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.button::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: #f2f6f633;
-  transition: all 0.4s ease-in-out;
-  z-index: 0;
-}
-
-.button:hover::before {
-  left: 0;
-}
-
-.button:hover {
-  color: black;
-  background: #00ffff;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 @media (min-width: 600px) {
   .form {
     width: 400px;

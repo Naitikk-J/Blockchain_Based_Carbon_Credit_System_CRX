@@ -17,6 +17,9 @@
   background: var(--glass-bg);
   border-bottom: 1px solid var(--glass-border);
   backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .logo a {
@@ -28,24 +31,24 @@
 
 .navLinks {
   display: flex;
+  list-style: none;
   gap: 1.5rem;
 }
 
-.navLink {
+.navLinks button {
+  background: none;
+  border: none;
   color: var(--text-light);
   text-decoration: none;
   font-size: 1rem;
   padding: 0.5rem 0;
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
 }
 
-.navLink:hover {
-  color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
-}
-
-.active {
+.navLinks button:hover {
   color: var(--primary-color);
   border-bottom-color: var(--primary-color);
 }

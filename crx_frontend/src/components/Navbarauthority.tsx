@@ -1,7 +1,7 @@
 // components/Navbar.tsx
 "use client";
 
-import styles from "../styles/Navbar.module.css";
+import styles from "../styles/Navbarauthority.module.css";
 import WalletConnect from "./ConnectWalletButton";
 
 const Navbar: React.FC = () => {

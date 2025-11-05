@@ -1,8 +1,9 @@
 :root {
-  --neon-blue: #00bfff;
+  --primary-color: #00bfff;
   --bg-dark: #0a0a0a;
   --text-light: #e0f7ff;
-  --glow-soft: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
 }
 
 .container {
@@ -18,14 +19,13 @@
 
 .heading {
   font-size: 1.8rem;
-  color: var(--neon-blue);
-  text-shadow: var(--glow-soft);
+  color: var(--primary-color);
 }
 
 .editButton {
   background: transparent;
-  border: 1px solid var(--neon-blue);
-  color: var(--neon-blue);
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -36,9 +36,8 @@
 }
 
 .editButton:hover {
-  background-color: var(--neon-blue);
+  background-color: var(--primary-color);
   color: #000;
-  box-shadow: var(--glow-soft);
 }
 
 .grid {
@@ -58,7 +57,7 @@
 
 .field label {
   font-weight: 600;
-  color: var(--neon-blue);
+  color: var(--primary-color);
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
@@ -66,8 +65,9 @@
 .field input,
 .field textarea {
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  border: 1px solid #333;
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
   border-radius: 8px;
   color: var(--text-light);
   padding: 0.75rem;
@@ -79,13 +79,12 @@
 .field input:focus,
 .field textarea:focus {
   outline: none;
-  border-color: var(--neon-blue);
-  box-shadow: var(--glow-soft);
+  border-color: var(--primary-color);
 }
 
 .field input:disabled,
 .field textarea:disabled {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.2);
   color: #888;
 }
 
@@ -99,12 +98,6 @@
   text-align: center;
   font-weight: 600;
   font-size: 1rem;
-  animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 @media (max-width: 768px) {

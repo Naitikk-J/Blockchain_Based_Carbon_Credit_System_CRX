@@ -1,24 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap');
 
 :root {
-  --burn-red: #ff3c3c;
-  --burn-glow: 0 0 10px var(--burn-red), 0 0 20px var(--burn-red);
+  --primary-color: #00bfff;
+  --secondary-color: #ff3c3c;
   --bg-dark: #0a0a0a;
   --text-light: #e0f7ff;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
 }
-
 
 .container {
   max-width: 420px;
   margin: 4rem auto;
   padding: 2rem;
-  background-color: rgba(10, 10, 10, 0.85);
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
   border-radius: 1rem;
-  border: 1px solid var(--burn-red);
-  box-shadow: 0 0 20px rgba(255, 60, 60, 0.2);
   font-family: 'Orbitron', sans-serif;
   color: var(--text-light);
-  backdrop-filter: blur(10px);
   animation: fadeInUp 0.8s ease-out;
 }
 
@@ -27,46 +27,43 @@
   font-weight: 700;
   text-align: center;
   margin-bottom: 1.5rem;
-  color: var(--burn-red);
-  text-shadow: var(--burn-glow);
+  color: var(--secondary-color);
 }
 
 .input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #333;
+  border: 1px solid var(--glass-border);
   border-radius: 8px;
   font-size: 1rem;
-  background-color: #121212;
-  color: #ff9b9b;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: var(--text-light);
   font-family: 'Orbitron', sans-serif;
   transition: all 0.3s ease;
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--burn-red);
-  box-shadow: var(--burn-glow);
+  border-color: var(--secondary-color);
 }
 
 .button {
   width: 100%;
   padding: 0.75rem;
-  background-color: var(--burn-red);
-  color: #000;
+  background-color: transparent;
+  color: var(--secondary-color);
   font-weight: bold;
   font-size: 1rem;
-  border: none;
+  border: 2px solid var(--secondary-color);
   border-radius: 10px;
   cursor: pointer;
   font-family: 'Orbitron', sans-serif;
   transition: all 0.3s ease;
-
 }
 
 .button:hover {
-  background-color: #ff5252;
-  box-shadow: 0 0 1px rgba(255, 60, 60, 0.7), 0 0 30px rgba(255, 60, 60, 0.5);
+  background-color: var(--secondary-color);
+  color: #000;
 }
 
 .button:disabled {
@@ -74,6 +71,7 @@
   color: #888;
   cursor: not-allowed;
   box-shadow: none;
+  border-color: #333;
 }
 
 .status {
@@ -81,20 +79,13 @@
   font-size: 1rem;
   text-align: center;
   font-weight: 600;
-  color: #ff9b9b;
+  color: var(--secondary-color);
   animation: fadeIn 0.5s ease-in;
 }
 
-/* Animations */
 @keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {

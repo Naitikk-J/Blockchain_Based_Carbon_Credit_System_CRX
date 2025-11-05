@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import MintToken from "../../../components/MintToken";
 
-import styles from "../../../styles/Dashboard.module.css";
+import styles from "../../../styles/AuthorityDashboard.module.css";
 import WalletConnect from "../../../components/ConnectWalletButton";
 import Navbar from "../../../components/Navbarauthority";
 

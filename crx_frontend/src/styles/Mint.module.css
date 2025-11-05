@@ -1,42 +1,64 @@
-.container {
-  margin: 2rem 0;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #f1f8e9;
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap');
+
+:root {
+  --primary-color: #00bfff;
+  --bg-dark: #0a0a0a;
+  --text-light: #e0f7ff;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
 }
 
-.heading {
-  font-size: 1.2rem;
-  color: #00796b;
-  margin-bottom: 1rem;
+.container {
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
 }
 
 .input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+  color: var(--text-light);
+  padding: 0.8rem 1rem;
   border-radius: 8px;
   font-size: 1rem;
-  margin-bottom: 1rem;
   width: 100%;
 }
 
-.button {
-  padding: 0.6rem 1rem;
-  background-color: #00796b;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.button:hover {
-  background-color: #004d40;
+.button {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--primary-color);
+  color: #000;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .status {
   margin-top: 1rem;
   font-weight: bold;
-  color: #33691e;
+  font-size: 0.9rem;
+  word-wrap: break-word;
 }

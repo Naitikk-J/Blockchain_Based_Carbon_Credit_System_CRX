@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { User } from "../models/User";
 import { generateToken } from "../middleware/auth";
+import { sendWelcomeEmail } from "../utils/mailer";
 
 const router = express.Router();
 
@@ -31,6 +32,8 @@ router.post("/signup", async (req: Request, res: Response): Promise<void> => {
     });
 
     await newUser.save();
+
+    await sendWelcomeEmail(newUser.email);
 
     const token = generateToken(newUser.wallet, newUser.role);
 
