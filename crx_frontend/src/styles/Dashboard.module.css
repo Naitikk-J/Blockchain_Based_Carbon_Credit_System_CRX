@@ -27,8 +27,42 @@ body {
   object-fit: cover;
   z-index: -1;
   opacity: 0.7;
-  filter: brightness(3) contrast(1.1) saturate(1.2);
-  pointer-events: none;
+  filter: brightness(0.5) contrast(1.2);
+}
+
+.dashboardContainer {
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 1.5rem;
+}
+
+.loadingSpinner {
+  border: 4px solid rgba(0, 191, 255, 0.2);
+  border-top: 4px solid var(--neon-blue);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .navbar {
@@ -36,13 +70,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #0f0f0f;
+  background-color: rgba(15, 15, 15, 0.8);
   padding: 1rem 2rem;
   border-bottom: 1px solid var(--neon-blue);
+  backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
   z-index: 999;
-  box-shadow: 0 0 10px rgba(0, 191, 255, 0.1);
 }
 
 .logo {
@@ -54,21 +88,22 @@ body {
 
 .navRight {
   display: flex;
-  flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
 }
 
 .navButton {
-  background-color: transparent;
-  border: 0;
-  color: #ffffff;
+  background: transparent;
+  border: 1px solid var(--neon-blue);
+  color: var(--neon-blue);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
-  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .navButton:hover {
@@ -77,22 +112,9 @@ body {
   box-shadow: var(--glow-soft);
 }
 
-.walletButton {
-  padding-left: 5rem;
-}
-
-.dashboardContainer {
-  min-height: 100vh;
-  padding: 3rem 2rem;
-  background-color: #000000;
-  background-size: auto;
-  background-repeat: repeat;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4rem;
-  position: relative;
-  z-index: 2;
+.header {
+  text-align: center;
+  animation: fadeInDown 1s ease-out;
 }
 
 .title {
@@ -100,69 +122,123 @@ body {
   font-weight: 700;
   color: var(--neon-blue);
   text-shadow: var(--glow-soft);
-  margin-top: 1rem;
-  text-align: center;
-  animation: fadeInDown 1.2s ease-out;
 }
 
-.sectionRow {
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--text-light);
+}
+
+.keyStats {
   display: flex;
-  flex-direction: row;
   gap: 2rem;
   justify-content: center;
   flex-wrap: wrap;
   width: 100%;
-  max-width: 1200px;
+  max-width: 900px;
 }
 
-.section {
-  flex: 1;
-  min-width: 300px;
-  max-width: 600px;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 2rem;
-  border-radius: 1rem;
+.statCard {
+  background-color: rgba(15, 15, 15, 0.8);
   border: 1px solid var(--neon-blue);
-  box-shadow: 0 0 15px rgba(0, 191, 255, 0.1);
-  animation: fadeIn 1s ease-in;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  flex: 1;
+  min-width: 200px;
+  transition: all 0.3s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--glow-soft);
+}
+
+.statCard h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--neon-blue);
+}
+
+.statCard p {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.quickActions {
+  width: 100%;
+  max-width: 900px;
+  text-align: center;
+}
+
+.quickActions h2 {
+  font-size: 1.8rem;
+  color: var(--neon-blue);
+  margin-bottom: 1.5rem;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  background-color: transparent;
+  border: 1px solid var(--neon-blue);
+  color: var(--neon-blue);
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.actionButton:hover {
+  background-color: var(--neon-blue);
+  color: #000;
+  box-shadow: var(--glow-soft);
+}
+
+.profileSection {
+  width: 100%;
+  max-width: 900px;
+  background-color: rgba(15, 15, 15, 0.8);
+  border: 1px solid var(--neon-blue);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-top: 2rem;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInDown {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
-    align-items: flex-start;
     gap: 1rem;
   }
-
-  .title {
-    font-size: 2rem;
-  }
-
   .navRight {
-    width: 100%;
     flex-direction: column;
-    align-items: flex-start;
+    width: 100%;
+  }
+  .title {
+    font-size: 2.5rem;
+  }
+  .keyStats, .actionButtons {
+    flex-direction: column;
   }
 }
