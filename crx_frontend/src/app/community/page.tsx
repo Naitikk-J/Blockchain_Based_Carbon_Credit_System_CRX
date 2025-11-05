@@ -29,7 +29,8 @@ export default function CommunityPage() {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/communitypost");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const res = await fetch(`${apiUrl}/communitypost`);
       const data = await res.json();
       setPosts(data);
     } catch (err) {
@@ -44,11 +45,17 @@ export default function CommunityPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch("http://localhost:5000/api/communitypost", {
+      const token = localStorage.getItem("crx_token");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      await fetch(`${apiUrl}/communitypost`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
         body: JSON.stringify({ ...form, amount: Number(form.amount) }),
       });
+
       setForm({
         title: "",
         description: "",
@@ -56,9 +63,12 @@ export default function CommunityPage() {
         amount: "",
         wallet: "",
       });
+
+      alert("✅ Post submitted successfully!");
       fetchPosts();
     } catch (err) {
       console.error("Failed to submit post:", err);
+      alert("❌ Failed to submit post.");
     }
   };
 

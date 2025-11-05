@@ -29,10 +29,11 @@ export default function Profile() {
       const wallet = await fetchWallet();
       if (!wallet) return;
 
-      fetch(`http://localhost:5000/api/profile/${wallet}`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      fetch(`${apiUrl}/profile/${wallet}`)
         .then((res) => res.json())
         .then((data) => {
-          if (data) {
+          if (data && data.wallet) {
             setProfile({
               name: data.name || "",
               email: data.email || "",
@@ -41,27 +42,24 @@ export default function Profile() {
               carbonCredits: data.carbonCredits || 0,
             });
           } else {
-            const newProfile = {
+            setProfile({
               name: `User ${wallet.slice(0, 6)}...`,
               email: `${wallet}@example.com`,
               wallet,
               blog: "",
               carbonCredits: 0,
-            };
-
-            fetch(`http://localhost:5000/api/profile/${wallet}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(newProfile),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                setProfile(data);
-              })
-              .catch(() => setStatus("⚠️ Failed to create profile."));
+            });
           }
         })
-        .catch(() => setStatus("⚠️ Failed to load profile."));
+        .catch(() => {
+          setProfile({
+            name: `User ${wallet.slice(0, 6)}...`,
+            email: `${wallet}@example.com`,
+            wallet,
+            blog: "",
+            carbonCredits: 0,
+          });
+        });
     })();
   }, []);
 
@@ -74,16 +72,21 @@ export default function Profile() {
   const handleSave = async () => {
     setStatus("");
     try {
-      const res = await fetch(`http://localhost:5000/api/profile/${profile.wallet}`, {
+      const token = localStorage.getItem("crx_token");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const res = await fetch(`${apiUrl}/profile/${profile.wallet}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
         body: JSON.stringify(profile),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      setProfile(data);
+      setProfile(data.user);
       setEditing(false);
-      setStatus("✅ Profile updated.");
+      setStatus("✅ Profile updated successfully.");
     } catch (err: any) {
       console.error(err);
       setStatus("❌ Update failed.");

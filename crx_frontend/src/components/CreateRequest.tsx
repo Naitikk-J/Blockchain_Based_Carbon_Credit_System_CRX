@@ -33,10 +33,13 @@ const CreateRequest: React.FC = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/requests", {
+      const token = localStorage.getItem("crx_token");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const response = await fetch(`${apiUrl}/requests`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
         body: JSON.stringify(requestBody),
       });

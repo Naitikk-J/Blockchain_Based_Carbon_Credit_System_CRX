@@ -21,10 +21,9 @@ const BalanceChecker: React.FC = () => {
     try {
       setLoading(true);
 
-      // Replace with `/api/token/balance/${address}` if you're proxying via Next.js
-      const res = await fetch(`http://localhost:5000/api/token/balance/${address}`);
-      
-      // Debugging step: if the response is not JSON
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const res = await fetch(`${apiUrl}/token/balance/${address}`);
+
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         const text = await res.text();

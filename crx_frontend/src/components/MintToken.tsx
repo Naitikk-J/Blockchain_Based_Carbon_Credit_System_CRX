@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import styles from "../styles/Mint.module.css";
-import { logTransaction } from "../utils/logTransaction";
 
 const MintToken: React.FC = () => {
   const [recipient, setRecipient] = useState("");
@@ -20,10 +19,15 @@ const MintToken: React.FC = () => {
     try {
       setLoading(true);
 
-      const response = await fetch("http://localhost:5000/api/token/mint", {
+      const token = localStorage.getItem("crx_token");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const response = await fetch(`${apiUrl}/token/mint`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ to: recipient, amount }),
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify({ to: recipient, amount: parseFloat(amount) }),
       });
 
       const data = await response.json();
@@ -31,14 +35,6 @@ const MintToken: React.FC = () => {
       if (!response.ok) {
         throw new Error(data.message || "Minting failed, please try again.");
       }
-
-      // ✅ Log the transaction to backend
-      await logTransaction(
-        "0xAuthorityAddress", // Replace with actual authority address if dynamic
-        recipient,
-        parseFloat(amount),
-        data.txHash // optional if available from backend
-      );
 
       setStatus(`✅ Minted successfully! Transaction Hash: ${data.txHash}`);
       setRecipient("");

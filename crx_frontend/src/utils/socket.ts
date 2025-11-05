@@ -1,5 +1,4 @@
-// utils/socket.ts
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:5000"); // Replace with your backend URL
-export default socket;
+// Backend removed - socket connection commented out for future integration
+// import { io } from "socket.io-client";
+// const socket = io("http://localhost:5000"); // Replace with your backend URL
+// export default socket;

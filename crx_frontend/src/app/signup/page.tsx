@@ -29,7 +29,8 @@ export default function SignupPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/signup", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const response = await fetch(`${apiUrl}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, wallet: address, role }),
@@ -40,6 +41,10 @@ export default function SignupPage() {
       if (!response.ok) {
         throw new Error(data.message || "Signup failed");
       }
+
+      localStorage.setItem("crx_token", data.token);
+      localStorage.setItem("crx_user_role", data.user.role);
+      localStorage.setItem("crx_user_wallet", data.user.wallet);
 
       alert(`✅ Signed up successfully as ${role}!`);
       router.push(`/dashboard/${role}`);

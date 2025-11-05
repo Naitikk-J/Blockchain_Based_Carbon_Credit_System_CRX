@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import styles from "../styles/Burn.module.css";
 import CRXTokenABI from "../abi/CRXToken.json";
-import { logTransaction } from "../utils/logTransaction";
 import { useRouter } from "next/navigation";
 
 const CONTRACT_ADDRESS = "0xb3e497afCaB81fFb7690e3157D03715F0580B391";
@@ -43,12 +42,22 @@ const BurnToken: React.FC = () => {
       setStatus("⏳ Burning...");
       await tx.wait();
 
-      await logTransaction(
-        userAddress,
-        "0x000000000000000000000000000000000000dEaD",
-        parseFloat(amount),
-        tx.hash
-      );
+      const token = localStorage.getItem("crx_token");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      await fetch(`${apiUrl}/transactions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify({
+          from: userAddress,
+          to: "0x000000000000000000000000000000000000dEaD",
+          amount: parseFloat(amount),
+          txHash: tx.hash,
+          type: "burn",
+        }),
+      });
 
       setStatus(`🔥 Burn successful! Tx Hash: ${tx.hash}`);
       setBurnSuccess(true);

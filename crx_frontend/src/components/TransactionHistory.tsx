@@ -34,7 +34,8 @@ export default function TransactionHistory() {
   const fetchTransactions = async (wallet: string) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/transactions/${wallet}`);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const res = await fetch(`${apiUrl}/transactions/${wallet}`);
       const data = await res.json();
       setTransactions(data);
     } catch (err) {

@@ -22,7 +22,13 @@ const RequestDashboard: React.FC = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/requests");
+        const token = localStorage.getItem("crx_token");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+        const res = await fetch(`${apiUrl}/requests`, {
+          headers: {
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        });
         const data = await res.json();
         const pendingRequests = data.filter((r: Request) => r.status === "pending");
         setRequests(pendingRequests);
@@ -38,23 +44,39 @@ const RequestDashboard: React.FC = () => {
 
   const handleApprove = async (id: string) => {
     try {
-      await fetch(`http://localhost:5000/api/requests/${id}/approve`, {
+      const token = localStorage.getItem("crx_token");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      await fetch(`${apiUrl}/requests/${id}/approve`, {
         method: "PUT",
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
       });
+
       setRequests((prev) => prev.filter((req) => req._id !== id));
+      alert("✅ Request approved successfully!");
     } catch (err) {
       console.error("❌ Error approving request:", err);
+      alert("❌ Failed to approve request.");
     }
   };
 
   const handleReject = async (id: string) => {
     try {
-      await fetch(`http://localhost:5000/api/requests/${id}/reject`, {
+      const token = localStorage.getItem("crx_token");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      await fetch(`${apiUrl}/requests/${id}/reject`, {
         method: "PUT",
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
       });
+
       setRequests((prev) => prev.filter((req) => req._id !== id));
+      alert("✅ Request rejected successfully!");
     } catch (err) {
       console.error("❌ Error rejecting request:", err);
+      alert("❌ Failed to reject request.");
     }
   };
 
