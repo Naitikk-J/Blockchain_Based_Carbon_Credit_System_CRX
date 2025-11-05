@@ -14,11 +14,6 @@ export default function LoginPage() {
         if (!address) return alert("Please connect your wallet first!");
         if (!email) return alert("Please enter your email!");
 
-        // ✅ Restrict access to demo@gmail.com only
-        if (email.trim().toLowerCase() !== "demo@gmail.com") {
-            return alert("❌ Only demo@gmail.com is allowed to log in.");
-        }
-
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
             const response = await fetch(`${apiUrl}/auth/login`, {
