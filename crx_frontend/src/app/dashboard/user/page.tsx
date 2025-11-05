@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -6,19 +6,23 @@ import Profile from "../../../components/Profile";
 import WalletConnect from "../../../components/ConnectWalletButton";
 import styles from "../../../styles/Dashboard.module.css";
 import { FaUser, FaProjectDiagram, FaWallet, FaUsers, FaLightbulb, FaSignOutAlt } from "react-icons/fa";
+import { useUsers } from "../../../components/WalletContext";
 
 const UserDashboard: React.FC = () => {
   const router = useRouter();
+  const { users } = useUsers();
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("User");
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("crx_token");
       const storedUser = localStorage.getItem("crx_user");
       if (storedUser) {
-        const user = JSON.parse(storedUser);
-        setUserName(user.name || "User");
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setUserName(parsedUser.name || "User");
       }
       if (!token) {
         alert("🚫 Unauthorized: Please login first.");
@@ -34,6 +38,8 @@ const UserDashboard: React.FC = () => {
     localStorage.removeItem("crx_user");
     router.push("/login");
   };
+
+  const currentUser = users.find(u => u.email === user?.email);
 
   if (loading) {
     return (
@@ -77,7 +83,7 @@ const UserDashboard: React.FC = () => {
       <div className={styles.keyStats}>
         <div className={styles.statCard}>
           <h3>Carbon Credits</h3>
-          <p>1,234</p>
+          <p>{currentUser ? currentUser.carbonCredits : "Loading..."}</p>
         </div>
         <div className={styles.statCard}>
           <h3>CRX Tokens</h3>
